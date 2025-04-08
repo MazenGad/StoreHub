@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StoreHub.Core.DTOs.ProductDto;
-using StoreHub.Core.DTOs.ProductImageDto;
+using StoreHub.Application.DTOs.ProductDto;
+using StoreHub.Application.DTOs.ProductImageDto;
 using StoreHub.Core.Interfaces;
 
 namespace StoreHub.Api.Controllers
@@ -44,7 +44,7 @@ namespace StoreHub.Api.Controllers
 		[HttpPost("AddProduct")]
 		public async Task<IActionResult> AddProduct([FromBody] CreateProductDto productDto)
 		{
-			await _productRepository.AddAsync(productDto);
+			//await _productRepository.AddAsync(productDto);
 			return Ok();
 		}
 	
@@ -52,7 +52,7 @@ namespace StoreHub.Api.Controllers
 		[HttpPut("UpdateProductById{id}")]
 		public async Task<IActionResult> UpdateProduct(int id , [FromBody] UpdateProductDto productDto)
 		{
-			await _productRepository.UpdateAsync(id, productDto);
+			//await _productRepository.UpdateAsync(id, productDto);
 			return Ok();
 		}
 
@@ -71,7 +71,7 @@ namespace StoreHub.Api.Controllers
 
 		public async Task<IActionResult> AddProductImages( [FromBody] IEnumerable<UpdateProductImageDto> imageUrls)
 		{
-			await _productRepository.AddProductImagesAsync( imageUrls);
+			//await _productRepository.AddProductImagesAsync( imageUrls);
 			return Ok();
 		}
 

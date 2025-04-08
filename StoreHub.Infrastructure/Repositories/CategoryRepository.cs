@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using StoreHub.Core.DTOs.CategoryDto;
 using StoreHub.Core.Entities;
 using StoreHub.Core.Interfaces;
 using StoreHub.Infrastructure.Data;
@@ -22,11 +21,9 @@ namespace StoreHub.Infrastructure.Repositories
 			_context = context;
 			_mapper = mapper;
 		}
-		public async Task AddAsync(AddCategoryDto categoryDto)
+		public async Task AddAsync(Category categoryDto)
 		{
-			var category = _mapper.Map<Category>(categoryDto);
-
-			await _context.Categories.AddAsync(category);
+			await _context.Categories.AddAsync(categoryDto);
 
 			_context.SaveChangesAsync();
 
@@ -41,17 +38,15 @@ namespace StoreHub.Infrastructure.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task<IEnumerable<GetCategoryDto>> GetAllAsync()
+		public async Task<IEnumerable<Category>> GetAllAsync()
 		{
 			var categories = await _context.Categories.ToListAsync();
 
-			var categoriesDto = _mapper.Map<IEnumerable<GetCategoryDto>>(categories);
-
-			return categoriesDto;
+			return categories;
 
 		}
 
-		public async Task<GetCategoryDto?> GetByIdAsync(int id)
+		public async Task<Category?> GetByIdAsync(int id)
 		{
 			var category = await _context.Categories.Include(p => p.Products).FirstOrDefaultAsync(c => c.Id == id);
 
@@ -60,22 +55,13 @@ namespace StoreHub.Infrastructure.Repositories
 				return null;
 			}
 
-			var categoryDto = _mapper.Map<GetCategoryDto>(category);
-
-			return categoryDto;
+			return category;
 
 		}
 
-		public async Task UpdateAsync(int id, UpdateCategoryDto categoryDto)
+		public async Task UpdateAsync( Category categoryDto)
 		{
-			var category = await _context.Categories.FindAsync(id);
-
-			if (category == null)
-			{
-				throw new Exception("Category not found");
-			}
-
-			_mapper.Map(categoryDto, category);
+			_context.Categories.Update(categoryDto);
 
 			await _context.SaveChangesAsync();
 		}

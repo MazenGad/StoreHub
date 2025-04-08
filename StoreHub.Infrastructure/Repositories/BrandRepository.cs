@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using StoreHub.Core.DTOs.BrandDto;
 using StoreHub.Core.Entities;
 using StoreHub.Core.Interfaces;
 using StoreHub.Infrastructure.Data;
@@ -21,11 +20,10 @@ namespace StoreHub.Infrastructure.Repositories
 			_context = context;
 			_mapper = mapper;
 		}
-		public async Task AddAsync(CreateBrandDto brandDto)
+		public async Task AddAsync(Brand brandDto)
 		{
-			var brand = _mapper.Map<Brand>(brandDto);
 
-			await _context.Brands.AddAsync(brand);
+			await _context.Brands.AddAsync(brandDto);
 
 			await _context.SaveChangesAsync();
 
@@ -45,7 +43,7 @@ namespace StoreHub.Infrastructure.Repositories
 			 await _context.SaveChangesAsync();
 		}
 
-		public async Task<IEnumerable<BrandDto>> GetAllAsync()
+		public async Task<IEnumerable<Brand>> GetAllAsync()
 		{
 			var brands = await _context.Brands.ToListAsync();
 			if (brands == null)
@@ -53,12 +51,11 @@ namespace StoreHub.Infrastructure.Repositories
 				return null;
 			}
 
-			var brandDtos = _mapper.Map<IEnumerable<BrandDto>>(brands);
 
-			return brandDtos;
+			return brands;
 		}
 
-		public async Task<BrandDto?> GetByIdAsync(int id)
+		public async Task<Brand?> GetByIdAsync(int id)
 		{
 			var brand = await _context.Brands.Include(p=>p.Products).FirstOrDefaultAsync(b => b.Id == id);
 
@@ -67,21 +64,14 @@ namespace StoreHub.Infrastructure.Repositories
 				return null;
 			}
 
-			var brandDto = _mapper.Map<BrandDto>(brand);
 
-			return brandDto;
+			return brand;
 		}
 
-		public async Task UpdateAsync(int id, UpdateBrandDto brandDto)
+		public async Task UpdateAsync( Brand brandDto)
 		{
-			var brand = await _context.Brands.FirstOrDefaultAsync(b => b.Id == id);
-
-			if (brand == null)
-			{
-				throw new Exception("Brand not found");
-			}
-
-			_mapper.Map(brandDto, brand);
+		
+			_context.Brands.Update(brandDto);
 
 			await _context.SaveChangesAsync();
 		}

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using StoreHub.Core.DTOs.CategoryDto;
-using StoreHub.Core.DTOs.ParentCategoryDto;
 using StoreHub.Core.Entities;
 using StoreHub.Core.Interfaces;
 using StoreHub.Infrastructure.Data;
@@ -24,11 +22,9 @@ namespace StoreHub.Infrastructure.Repositories
 			_mapper = mapper;
 		}
 
-		public async Task AddAsync(AddParentCategoryDto parentCategoryDto)
+		public async Task AddAsync(ParentCategory parentCategoryDto)
 		{
-			var category = _mapper.Map<ParentCategory>(parentCategoryDto);
-
-			await _context.ParentCategories.AddAsync(category);
+			await _context.ParentCategories.AddAsync(parentCategoryDto);
 
 			await _context.SaveChangesAsync();
 		}
@@ -47,14 +43,14 @@ namespace StoreHub.Infrastructure.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task<IEnumerable<GetParentCategoryDto>> GetAllAsync()
+		public async Task<IEnumerable<ParentCategory>> GetAllAsync()
 		{
 			var categories = await _context.ParentCategories.Include(c=>c.Categories).ToListAsync();
 
-			return _mapper.Map<IEnumerable<ParentCategory>, IEnumerable<GetParentCategoryDto>>(categories);
+			return categories;
 		}
 
-		public async Task<GetParentCategoryDto?> GetByIdAsync(int id)
+		public async Task<ParentCategory?> GetByIdAsync(int id)
 		{
 			var parentCategory = await _context.ParentCategories.Include(c => c.Categories).FirstOrDefaultAsync(c => c.Id == id);
 
@@ -63,19 +59,12 @@ namespace StoreHub.Infrastructure.Repositories
 				return null;
 			}
 
-			return _mapper.Map<GetParentCategoryDto>(parentCategory);
+			return parentCategory;
 		}
 
-		public async Task UpdateAsync(int id, UpdateParentCategoryDto parentCategoryDto)
+		public async Task UpdateAsync(ParentCategory parentCategoryDto)
 		{
-			var parentCategory = await _context.ParentCategories.FindAsync(id);
-
-			if (parentCategory == null)
-			{
-				throw new Exception("Category not found");
-			}
-
-			_mapper.Map(parentCategoryDto, parentCategory);
+			_context.ParentCategories.Update(parentCategoryDto);
 
 			await _context.SaveChangesAsync();
 		}

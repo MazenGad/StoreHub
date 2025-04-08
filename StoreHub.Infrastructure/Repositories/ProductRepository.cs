@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using StoreHub.Core.DTOs.ProductDto;
-using StoreHub.Core.DTOs.ProductImageDto;
 using StoreHub.Core.Entities;
 using StoreHub.Core.Interfaces;
 using StoreHub.Infrastructure.Data;
@@ -25,18 +23,16 @@ namespace StoreHub.Infrastructure.Repositories
 			_mapper = mapper;
 		}
 
-		public async Task AddAsync(CreateProductDto productDto)
+		public async Task AddAsync(Product productDto)
 		{
-			var product = _mapper.Map<CreateProductDto, Product>(productDto);
-			product.UpdateStock(productDto.StockQuantity);
-			await _context.Products.AddAsync(product);
+			productDto.UpdateStock(productDto.StockQuantity);
+			await _context.Products.AddAsync(productDto);
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task AddProductImagesAsync( IEnumerable<UpdateProductImageDto> imageUrls)
+		public async Task AddProductImagesAsync( IEnumerable<ProductImages> imageUrls)
 		{
-			var productImages = _mapper.Map<IEnumerable<ProductImages>>(imageUrls);
-			await _context.ProductImages.AddRangeAsync(productImages);
+			await _context.ProductImages.AddRangeAsync(imageUrls);
 			await _context.SaveChangesAsync();
 		}
 
@@ -54,11 +50,10 @@ namespace StoreHub.Infrastructure.Repositories
 
 		}
 
-		public async Task<IEnumerable<GetProductDto>> GetAllAsync()
+		public async Task<IEnumerable<Product>> GetAllAsync()
 		{
 			var products = await _context.Products
 				.Include(p => p.ProductImages)
-				.ProjectTo<GetProductDto>(_mapper.ConfigurationProvider)
 				.ToListAsync();
 
 			if (products == null)
@@ -67,15 +62,14 @@ namespace StoreHub.Infrastructure.Repositories
 
 			}
 
-			return _mapper.Map(products, new List<GetProductDto>());
+			return products;
 		}
 
-		public async Task<GetProductDto?> GetByIdAsync(int id)
+		public async Task<Product?> GetByIdAsync(int id)
 		{
 			var product = await _context.Products
 				.Include(p => p.ProductImages)
 				.Where(p => p.Id == id)
-				.ProjectTo<GetProductDto>(_mapper.ConfigurationProvider) 
 				.FirstOrDefaultAsync();
 
 			if (product == null)
@@ -100,16 +94,10 @@ namespace StoreHub.Infrastructure.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task UpdateAsync(int id, UpdateProductDto productDto)
+		public async Task UpdateAsync(Product productDto)
 		{
-			var product = await _context.Products.FindAsync(id);
-			if (product == null)
-			{
-				throw new Exception("Product not found");
-			}
-
-			_mapper.Map(productDto, product);
-			product.UpdateStock(productDto.StockQuantity);
+			productDto.UpdateStock(productDto.StockQuantity);
+			_context.Products.Update(productDto);
 
 			await _context.SaveChangesAsync();
 

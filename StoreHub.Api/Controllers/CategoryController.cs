@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StoreHub.Core.DTOs.CategoryDto;
+using StoreHub.Application.DTOs.CategoryDto;
 using StoreHub.Core.Interfaces;
 
 namespace StoreHub.Api.Controllers
@@ -35,7 +35,7 @@ namespace StoreHub.Api.Controllers
 		[HttpPost("AddCategory")]
 		public async Task<IActionResult> Add([FromBody] AddCategoryDto categoryDto)
 		{
-			await _categoryRepository.AddAsync(categoryDto);
+			//await _categoryRepository.AddAsync(categoryDto);
 			return Ok();
 		}
 
@@ -48,9 +48,9 @@ namespace StoreHub.Api.Controllers
 		}
 
 		[HttpPut("UpdateCategory/{id}")]
-		public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryDto categoryDto)
+		public async Task<IActionResult> Update( int id , [FromBody] UpdateCategoryDto categoryDto)
 		{
-			await _categoryRepository.UpdateAsync(id, categoryDto);
+			//await _categoryRepository.UpdateAsync(categoryDto);
 			return Ok();
 		}
 	}

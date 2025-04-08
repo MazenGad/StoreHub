@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StoreHub.Core.DTOs.ParentCategoryDto;
+using StoreHub.Application.DTOs.ParentCategoryDto;
 using StoreHub.Core.Interfaces;
 
 namespace StoreHub.Api.Controllers
@@ -40,7 +40,7 @@ namespace StoreHub.Api.Controllers
 
 		public async Task<IActionResult> AddParentCategory([FromBody] AddParentCategoryDto parentCategoryDto)
 		{
-			await _parentCategoryRepository.AddAsync(parentCategoryDto);
+			//await _parentCategoryRepository.AddAsync(parentCategoryDto);
 			return Ok();
 		}
 
@@ -61,7 +61,7 @@ namespace StoreHub.Api.Controllers
 			{
 				return NotFound();
 			}
-			await _parentCategoryRepository.UpdateAsync(id, parentCategoryDto);
+			//await _parentCategoryRepository.UpdateAsync(id, parentCategoryDto);
 			return Ok();
 		}
 

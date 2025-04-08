@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StoreHub.Core.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace StoreHub.Infrastructure.Data
 {
-    public class StoreHubDb : DbContext
+    public class StoreHubDb : IdentityDbContext<ApplicationUser>
 	{
 		public StoreHubDb(DbContextOptions<StoreHubDb> options) : base(options) { }
 		public DbSet<Brand> Brands { get; set; }
@@ -19,11 +20,14 @@ namespace StoreHub.Infrastructure.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			base.OnModelCreating(modelBuilder);
+
 			modelBuilder.Entity<Brand>()
 				.HasMany(b => b.Products)
 				.WithOne(p => p.Brand)
 				.HasForeignKey(p => p.BrandId).
 				OnDelete(DeleteBehavior.Restrict);
+
 
 			modelBuilder.Entity<Category>()
 				.HasMany(c => c.Products)
