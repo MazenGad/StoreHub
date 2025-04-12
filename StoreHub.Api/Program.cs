@@ -14,6 +14,7 @@ using MediatR;
 using StoreHub.Application.CQRS.Brand.Queries.GetAllBrands;
 using StoreHub.Application;
 using StoreHub.Api.ExceptionHandling;
+using StoreHub.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,7 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
+
 builder.Services.AddAuthorization();
 
 
@@ -95,6 +97,7 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
